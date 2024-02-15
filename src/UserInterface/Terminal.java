@@ -69,11 +69,17 @@ public class Terminal {
             try {
                 command = sc.nextLine();
                 String[] commandToCheck = command.split(" ");
-                if((commandToCheck[0].equals("update") || commandToCheck[0].equals("remove_by_id")) && !commandToCheck[1].matches("[1-9]\\d*")){
-                    System.out.println("id должен быть целым неотрицательным числом");
-                    continue;
+                if(commandToCheck[0].equals("update") || commandToCheck[0].equals("remove_by_id")){
+                    if(commandToCheck.length == 1){
+                        System.out.println("id должен быть введен через пробел после команды");
+                        continue;
+                    }
+                    else if(!commandToCheck[1].matches("[1-9]\\d*")) {
+                        System.out.println("id должен быть целым неотрицательным числом");
+                        continue;
+                    }
                 }
-                if (command.equals("add") || command.split(" ")[0].equals("update"))
+                if (commandToCheck[0].equals("add") || commandToCheck[0].equals("update"))
                     element = this.readArguments();
                 commandExecuter.executeCommand(command, element);
             }

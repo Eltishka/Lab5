@@ -12,7 +12,7 @@ public class UnknownCommand implements Command {
     }
 
     @Override
-    public <T extends Vehicle> void execute() {
+    public void execute() {
         this.infoSender.sendLine("команды \"" + this.command + "\" нет, чтобы вывести список комманд используйте help");
     }
 }

@@ -26,6 +26,7 @@ public class Save implements Command{
     public void execute() {
         try {
             this.fileSaver.save(fileName, this.storage);
+            this.infoSender.sendLine("Файл сохранен");
         } catch (FileNotFoundException e) {
             infoSender.sendLine("Файл не найден");
         } catch (SecurityException e){
@@ -34,5 +35,6 @@ public class Save implements Command{
             infoSender.sendLine("Непредвиденная ошибка");
             infoSender.sendLine(e.getMessage());
         }
+
     }
 }

@@ -53,5 +53,6 @@ public class ExecuteScript implements Command{
             int commandError = it.previousIndex();
             this.infoSender.sendLine("Аргумент команды на " + (commandError + 1) + " строке должен быть целым числом");
         }
+        this.infoSender.sendLine("Скрипт выполнен");
     }
 }
