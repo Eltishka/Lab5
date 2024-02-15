@@ -1,7 +1,8 @@
 package Server.FileWork;
 
+import java.io.IOException;
 import java.util.Collection;
 
 public interface FileSaver {
-    public void save(String fileName, Collection arr);
+    void save(String fileName, Collection arr) throws IOException;
 }

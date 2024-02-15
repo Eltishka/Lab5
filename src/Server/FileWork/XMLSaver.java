@@ -1,99 +1,64 @@
 package Server.FileWork;
 
 import ObjectSpace.Vehicle;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Queue;
 
-public class XMLSaver implements FileSaver { //TODO  REFACTOR
+public class XMLSaver implements FileSaver {
 
-    private Document createFile(Collection<Vehicle> storage) {
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = null;
-        try {
-            docBuilder = docFactory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
-
-        Document doc = docBuilder.newDocument();
-        Element rootElement = doc.createElement("VehicleStorage");
-        doc.appendChild(rootElement);
-
+    public XMLSaver(){}
+    private Queue<String> createFileContent(Collection<Vehicle> storage) {
+        Queue<String> xml = new LinkedList<>();
+        xml.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        xml.add("<Storage>\n");
         for(Vehicle el: storage) {
-            Element vehicle = doc.createElement("Vehicle");
-            rootElement.appendChild(vehicle);
+            xml.add("\t<Vehicle>\n");
 
-            Element id = doc.createElement("id");
-            id.setTextContent(Integer.valueOf(el.getId()).toString());
-            vehicle.appendChild(id);
+            xml.add("\t\t<id>");
+            xml.add(el.getId().toString());
+            xml.add("</id>\n");
 
-            Element name = doc.createElement("name");
-            name.setTextContent(el.getName());
-            vehicle.appendChild(name);
+            xml.add("\t\t<name>");
+            xml.add(el.getName());
+            xml.add("</name>\n");
 
-            Element coords = doc.createElement("coordinates");
-            coords.setTextContent(el.getCoordinates().toString());
-            vehicle.appendChild(coords);
+            xml.add("\t\t<coordinates>");
+            xml.add(el.getCoordinates().toString());
+            xml.add("</coordinates>\n");
 
-            Element creationDate = doc.createElement("creationDate");
-            creationDate.setTextContent(el.getCreationDate().toString());
-            vehicle.appendChild(creationDate);
+            xml.add("\t\t<creation_date>");
+            xml.add(el.getCreationDate().toString());
+            xml.add("</creation_date>\n");
 
-            Element enginePower = doc.createElement("enginePower");
-            enginePower.setTextContent(el.getEnginePower().toString());
-            vehicle.appendChild(enginePower);
+            xml.add("\t\t<engine_power>");
+            xml.add(el.getEnginePower().toString());
+            xml.add("</engine_power>\n");
 
-            Element type = doc.createElement("type");
-            type.setTextContent(el.getType().toString());
-            vehicle.appendChild(type);
+            xml.add("\t\t<vehicle_type>");
+            xml.add(el.getType().toString());
+            xml.add("</vehicle_type>\n");
 
-            Element fuelType = doc.createElement("fuelType");
-            fuelType.setTextContent(el.getFuelType().toString());
-            vehicle.appendChild(fuelType);
+            xml.add("\t\t<fuel_type>");
+            xml.add(el.getFuelType().toString());
+            xml.add("</fuel_type>\n");
+
+            xml.add("\t</Vehicle>\n");
         }
-        return doc;
+        xml.add("</Storage>");
+        return xml;
     }
 
-
     @Override
-    public void save(String fileName, Collection arr) {
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = null;
-        try {
-            transformer = transformerFactory.newTransformer();
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
+    public void save(String fileName, Collection arr) throws IOException, SecurityException {
+        BufferedWriter writter = new BufferedWriter(new FileWriter(fileName));
+        Queue<String> xml = this.createFileContent(arr);
+        while (!xml.isEmpty()) {
+            String line = xml.poll();
+            writter.write(line);
         }
-
-        // pretty print
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-
-        Document doc = createFile(arr);
-
-        DOMSource source = new DOMSource(doc);
-
-        try {
-            FileOutputStream fos = new FileOutputStream(fileName);
-            StreamResult result = new StreamResult(fos);
-            try {
-                transformer.transform(source, result);
-            } catch (TransformerException e) {
-                e.printStackTrace();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
+        writter.close();
 
     }
 }

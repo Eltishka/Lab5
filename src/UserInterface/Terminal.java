@@ -1,8 +1,6 @@
 package UserInterface;
 
 import ObjectSpace.FuelType;
-import ObjectSpace.Vehicle;
-import ObjectSpace.VehicleException;
 import ObjectSpace.VehicleType;
 import Server.CommandExecuter;
 import Server.Pair;
@@ -32,12 +30,14 @@ public class Terminal {
     private ArrayList<String> readArguments(){
         ArrayList<String> args = new ArrayList<String>();
 
-        System.out.println("Введите имя (непустая строка)");
-        args.add(sc.nextLine());
+        args.add(getArgumentWithRules("Введите имя (непустая строка)",
+                                            arg -> !arg.equals("")));
 
-        args.add(getArgumentWithRules("Введите координаты в формате: x y (x - целое, y - число с дробной частью, оба больше нуля)", arg -> arg.matches("\\d+(\\.?\\d*) \\d+")));
+        args.add(getArgumentWithRules("Введите координаты в формате: x y (x - число с дробной частью, оба больше нуля, y - целое)",
+                                            arg -> arg.matches("\\d+(\\.?\\d*) \\d+")));
 
-        args.add(getArgumentWithRules("Введите силу двигателя (неотрицательное целое число больше нуля):", arg -> arg.matches("[1-9]\\d*")));
+        args.add(getArgumentWithRules("Введите силу двигателя (неотрицательное целое число больше нуля):",
+                                            arg -> arg.matches("[1-9]\\d*")));
 
         List<VehicleType> possibleTypes = Arrays.asList(VehicleType.values());
         ArrayList<String> possibleTypesStr = new ArrayList<>();
@@ -45,7 +45,8 @@ public class Terminal {
         while(it.hasNext()){
             possibleTypesStr.add(it.next().toString());
         }
-        args.add(getArgumentWithRules("Введите типа средства передвижения из представленных" + possibleTypesStr.toString() + ":", arg -> possibleTypesStr.contains(arg)));
+        args.add(getArgumentWithRules("Введите типа средства передвижения из представленных" + possibleTypesStr.toString() + ":",
+                                            arg -> possibleTypesStr.contains(arg)));
 
         List<FuelType> possibleFuelTypes = Arrays.asList(FuelType.values());
         ArrayList<String> possibleFuelTypesStr = new ArrayList<>();
@@ -53,7 +54,8 @@ public class Terminal {
         while(fuelIt.hasNext()){
             possibleFuelTypesStr.add(fuelIt.next().toString());
         }
-        args.add(getArgumentWithRules("Введите типа топлива из представленных" + possibleFuelTypesStr.toString() + ":", arg -> possibleFuelTypesStr.contains(arg)));
+        args.add(getArgumentWithRules("Введите типа топлива из представленных" + possibleFuelTypesStr.toString() + ":",
+                                            arg -> possibleFuelTypesStr.contains(arg)));
 
         return args;
     }
@@ -61,32 +63,23 @@ public class Terminal {
     public void readFromConsole() {
         LinkedList<Pair<String, ArrayList<String>>> test = new LinkedList<>();
         ArrayList<String> test_args = new ArrayList<>();
-        /*test_args.add("asd");
-        test_args.add("1 1");
-        test_args.add("124");
-        test_args.add("asf");
-        test_args.add("asf");
-        test.add(new Pair("add", test_args));
-        try {
-            test.forEach(comm -> commandExecuter.executeCommand(comm.getFirst(), comm.getSecond()));
-        }
-        catch (VehicleException e){
-            e.printStackTrace();
-            e.getCause().printStackTrace();
-            return;
-        }*/
         String command = "";
-        ArrayList<String> argument = new ArrayList<>();
+        ArrayList<String> element = new ArrayList<>();
         while(!command.equals("exit")) {
             try {
                 command = sc.nextLine();
-                if (command.contains("add") || command.contains("update"))
-                    argument = this.readArguments();
-                commandExecuter.executeCommand(command, argument);
+                String[] commandToCheck = command.split(" ");
+                if((commandToCheck[0].equals("update") || commandToCheck[0].equals("remove_by_id")) && !commandToCheck[1].matches("[1-9]\\d*")){
+                    System.out.println("id должен быть целым неотрицательным числом");
+                    continue;
+                }
+                if (command.equals("add") || command.split(" ")[0].equals("update"))
+                    element = this.readArguments();
+                commandExecuter.executeCommand(command, element);
             }
             catch (NoSuchElementException e){
                 sc.close();
-                commandExecuter.executeCommand("exit", argument);
+                commandExecuter.executeCommand("exit", element);
             }
         }
     }

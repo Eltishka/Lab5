@@ -1,6 +1,9 @@
 package ObjectSpace;
 
-import java.lang.reflect.Field;
+import ObjectSpace.Exceptions.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
@@ -91,7 +94,10 @@ public class Vehicle implements Comparable<Vehicle> {
 
     @Override
     public int compareTo(Vehicle o) {
-        return this.enginePower.compareTo(o.enginePower);
+        int res = this.enginePower.compareTo(o.getEnginePower()) ;
+        if(res == 0)
+            res = this.id.compareTo(o.getId());
+        return res;
     }
 
     @Override
@@ -118,24 +124,57 @@ public class Vehicle implements Comparable<Vehicle> {
     }
 
     public static Vehicle parseVehicle(String[] args) throws VehicleException{
-        if(args.length < 5){
+
+        if(args.length < 5 || Arrays.asList(args).contains(null)){
             throw new VehicleException("Недостаточно аргументов для создания объекта", new IllegalArgumentException(Integer.valueOf(args.length).toString()));
         }
 
         try {
 
             String name = args[0];
-            String[] coord = args[1].split(" ");
-            Double x = Double.parseDouble(coord[0]);
-            Long y = Long.parseLong(coord[1]);
-            Coordinates coordinates = new Coordinates(x, y);
-            Long enginePower = Long.parseLong(args[2]);
-            VehicleType type = VehicleType.valueOf(args[3]);
-            FuelType fuelType = FuelType.valueOf(args[4]);
+            Coordinates coordinates = null;
+            VehicleType type = null;
+            FuelType fuelType = null;
+            Long enginePower = null;
+
+            if(name.equals(""))
+                throw new VehicleNameException("Имя не может быть пустой строкой", 1);
+
+            try {
+                String[] coord = args[1].split(" ");
+                Double x = Double.parseDouble(coord[0]);
+                Long y = Long.parseLong(coord[1]);
+                coordinates = new Coordinates(x, y);
+            }
+            catch (Exception e){
+                throw new CoordinatesException("Неверный формат ввода координат. Правильно: (x, y) x - может быть дробным", e, 2);
+            }
+
+            try {
+                enginePower = Long.parseLong(args[2]);
+            }
+            catch (Exception e){
+                throw new EnginePowerException("Сила двигателя должна быть целым числом большим 0", e, 3);
+            }
+
+            try {
+                type = VehicleType.valueOf(args[3]);
+            }
+            catch (Exception e){
+                throw new VehicleTypeException("Несуществующий тип средства передвижения.", e, 4);
+            }
+
+            try {
+                fuelType = FuelType.valueOf(args[4]);
+            }
+            catch (Exception e){
+                throw new FuelTypeException("Несуществующий тип топлива", e, 5);
+            }
+
             return new Vehicle(name, coordinates, enginePower, type, fuelType);
         }
         catch (Exception e){
-            throw new VehicleException("Неверный ввод аргументов объекта", e);
+            throw new VehicleException("Неверный формат ввода аргументов объекта", e);
         }
 
     }

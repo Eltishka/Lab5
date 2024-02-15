@@ -1,6 +1,8 @@
 add
-asd
-1 1
+sdafdsfb
+1 4
 124
-asf
-asf
+PLANE
+NUCLEAR
+show
+info
