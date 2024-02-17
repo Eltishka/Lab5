@@ -1,5 +1,9 @@
 package ObjectSpace;
 
+/**
+ * @author Piromant
+ * Класс координат в формате (x, y)
+ */
 public class Coordinates {
     private Double x; //Поле не может быть null
     private Long y; //Поле не может быть null

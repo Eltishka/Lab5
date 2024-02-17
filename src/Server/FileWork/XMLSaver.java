@@ -1,14 +1,24 @@
 package Server.FileWork;
 
 import ObjectSpace.Vehicle;
-import java.io.*;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
-
+/**
+ * @author Piromant
+ * Класс, реализующий интерфейс FileSaver, сохраняет коллекцию в XML формате
+ */
 public class XMLSaver implements FileSaver {
 
-    public XMLSaver(){}
+    /**
+     * Метод, создающий "внутренность" файла, структуру xml и записывающий туда объекты
+     * @param storage
+     * @return Содержание xml файла
+     */
     private Queue<String> createFileContent(Collection<Vehicle> storage) {
         Queue<String> xml = new LinkedList<>();
         xml.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -50,8 +60,16 @@ public class XMLSaver implements FileSaver {
         return xml;
     }
 
+
+    /**
+     * Метод сохраняющий коллекцию в файл в формате xml
+     * @param fileName имя файла, в который будет идти сохранение
+     * @param arr колекция, которая будет сохранена
+     * @throws IOException
+     * @throws SecurityException
+     */
     @Override
-    public void save(String fileName, Collection arr) throws IOException, SecurityException {
+    public void save(String fileName, Collection<Vehicle> arr) throws IOException, SecurityException {
         BufferedWriter writter = new BufferedWriter(new FileWriter(fileName));
         Queue<String> xml = this.createFileContent(arr);
         while (!xml.isEmpty()) {

@@ -1,7 +1,6 @@
 package Server.FileWork;
 
-import Server.InfoSender;
-import Server.Pair;
+import Server.Utilities.Pair;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,85 +8,73 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
-
+/**
+ * @author Piromant
+ * Класс, реализующий интерфейс FileReader, читает файл при помощи InputStreamReader
+ * @see FileReader
+ */
 public class FileInputStreamReader implements FileReader {
     InputStreamReader reader;
-    InfoSender infoSender;
 
-    public FileInputStreamReader(InfoSender infoSender) {
-        this.infoSender = infoSender;
-    }
+    public FileInputStreamReader() {}
 
-    private void close(){
+    @Override
+    public void close() throws IOException{
         if (reader != null) {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                infoSender.sendLine(e.getStackTrace());
-            }
+            reader.close();
         }
     }
 
-    private boolean openFile(String fileName){
-        try {
-            this.reader = new InputStreamReader(new FileInputStream(fileName));
-            return true;
-        } catch (FileNotFoundException | NullPointerException e) {
-            infoSender.sendLine("Файл не найден");
-            return false;
-        } catch (SecurityException e){
-            infoSender.sendLine("Не хватает прав для доступа к файлу");
-            return false;
-        }
+    @Override
+    public void openFile(String fileName) throws FileNotFoundException, NullPointerException, SecurityException{
+        this.reader = new InputStreamReader(new FileInputStream(fileName));
     }
-    private String readLine(){
+    private String readLine() throws IOException{
         String str = null;
-        try {
-            int ch = this.reader.read();
-            str = (ch != -1) ? "" : null;
+        int ch = this.reader.read();
+        str = (ch != -1) ? "" : null;
 
-            while (ch != (int)'\r' && ch != -1) {
+        while (ch != (int)'\r' && ch != -1) {
 
-                if(ch != (int)'\n') {
-                    str += (char) ch;
-                }
-                else if(!str.equals("")) {
-                    break;
-                }
-                ch = this.reader.read();
-
+            if(ch != (int)'\n') {
+                str += (char) ch;
             }
-        }
-        catch (IOException e){
-            infoSender.sendLine(e.getStackTrace());
-        }
+            else if(!str.equals("")) {
+                break;
+            }
+            ch = this.reader.read();
 
+        }
         return str;
     }
 
-    private ArrayList<String> readArguments(){
+    /**
+     * Метод, читающий аргументы для созадния элемента коллекции
+     * @return Массив строк - аргументов
+     * @throws IOException
+     */
+    private ArrayList<String> readArguments() throws IOException{
         ArrayList<String> args = new ArrayList<String>();
         for(int i = 0; i < 5; i++){
             args.add(this.readLine());
-            if(args.get(i) == "exit")
-                break;
         }
         return args;
     }
 
 
     @Override
-    public LinkedList<Pair<String, ArrayList<String>>> readCommandsFromFile(String fileName) {
+    public LinkedList<Pair<String, ArrayList<String>>> readCommandsFromFile(String fileName) throws NullPointerException, IOException,
+                                                                                                    SecurityException {
 
         LinkedList<Pair<String, ArrayList<String>>> commandList = new LinkedList<Pair<String, ArrayList<String>>>();
-        if(!this.openFile(fileName))
-            return commandList;
+        this.openFile(fileName);
+
         String command = "";
         ArrayList<String> argument;
         while (true) {
             command = this.readLine();
             argument = new ArrayList<String>();
-            if(command == "exit" || command == null || argument.contains("exit"))
+            if(command == "exit" || command == null)
                 break;
             if (command.equals("add") || command.contains("update"))
                 argument = this.readArguments();
@@ -96,5 +83,19 @@ public class FileInputStreamReader implements FileReader {
         this.close();
         return commandList;
 
+    }
+
+    @Override
+    public String readWholeFile(String fileName) throws IOException, NullPointerException {
+
+        this.openFile(fileName);
+        String res = new String();
+        String str = readLine();
+        while (str != null){
+            res = res.concat(str + '\n');
+            str = readLine();
+        }
+        this.close();
+        return res;
     }
 }

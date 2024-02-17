@@ -1,7 +1,9 @@
 package Server.Commands;
 
-import ObjectSpace.Vehicle;
-
+/**
+ * @author Piromant
+ * Интерфейс команды, который реализуют все команды
+ */
 public interface Command {
     void execute();
 }

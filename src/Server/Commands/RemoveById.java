@@ -2,13 +2,23 @@ package Server.Commands;
 
 import ObjectSpace.Vehicle;
 import Server.Collections.Storage;
-import Server.InfoSender;
-
-import javax.persistence.criteria.CriteriaBuilder;
-
+import Server.Utilities.InfoSender;
+/**
+ * @author Piromant
+ * Реализация команды remove_by_id
+ */
 public class RemoveById implements Command{
+    /**
+     * @see Storage
+     */
     private Storage storage;
+    /**
+     * id элемента, который будет удален
+     */
     private int id;
+    /**
+     * @see InfoSender
+     */
     private InfoSender infoSender;
 
     public RemoveById(Storage storage, int id, InfoSender infoSender){
@@ -17,12 +27,15 @@ public class RemoveById implements Command{
         this.infoSender = infoSender;
     }
 
+    /**
+     * Метод, удаляющий элемент по его id и выводящий результат операци
+     */
     @Override
     public void execute() {
         boolean res = this.storage.remove(new Vehicle(this.id));
         if(res)
             this.infoSender.sendLine("Элемент удален");
         else
-            this.infoSender.sendLine("Такого элемента в коллекции нет");
+            this.infoSender.sendLine("Элемента с таким id в коллекции нет");
     }
 }

@@ -2,16 +2,28 @@ package Server.Commands;
 
 import ObjectSpace.Vehicle;
 import Server.Collections.Storage;
-import Server.InfoSender;
-
+import Server.Utilities.InfoSender;
+/**
+ * @author Piromant
+ * Реализация команды info
+ */
 public class Info implements Command{
+    /**
+     * @see InfoSender
+     */
     private InfoSender infoSender;
+    /**
+     * @see Storage
+     */
     private Storage storage;
 
     public <T extends Vehicle> Info(Storage<T> storage, InfoSender infoSender){
         this.storage = storage;
         this.infoSender = infoSender;
     }
+    /**
+     * Метод, выводящий типа, дату создания и количество элементов коллекци
+     */
     @Override
     public void execute() {
         this.infoSender.sendLine("Тип коллекции " + storage.getClass());

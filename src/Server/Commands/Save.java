@@ -1,18 +1,30 @@
 package Server.Commands;
 
 import Server.Collections.Storage;
-import Server.FileWork.FileReader;
 import Server.FileWork.FileSaver;
-import Server.InfoSender;
+import Server.Utilities.InfoSender;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-
+/**
+ * @author Piromant
+ * Реализация команды save
+ */
 public class Save implements Command{
+    /**
+     * @see FileSaver
+     */
     private final FileSaver fileSaver;
+    /**
+     * @see Storage
+     */
     private final Storage storage;
+    /**
+     * Имя файла, в который будет сохранена коллекция
+     */
     private final String fileName;
+    /**
+     * @see InfoSender
+     */
     private final InfoSender infoSender;
 
     public Save(FileSaver fileSaver, String fileName, Storage storage, InfoSender infoSender){
@@ -22,6 +34,9 @@ public class Save implements Command{
         this.fileName = fileName;
     }
 
+    /**
+     * Метод, сохраняющий коллекцию в файл и выводящий что нет, если сохранение не удается
+     */
     @Override
     public void execute() {
         try {
@@ -31,7 +46,10 @@ public class Save implements Command{
             infoSender.sendLine("Файл не найден");
         } catch (SecurityException e){
             infoSender.sendLine("Не хватает прав для доступа к файлу");
-        } catch (Exception e) {
+        } catch (NullPointerException e){
+            infoSender.sendLine("Не удалось получить инофрмацию об имени файл, возможно переменная окружения SAVEFILE не опрделена");
+        }
+        catch (Exception e) {
             infoSender.sendLine("Непредвиденная ошибка");
             infoSender.sendLine(e.getMessage());
         }

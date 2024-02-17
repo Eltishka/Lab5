@@ -2,12 +2,27 @@ package Server.Commands;
 
 import ObjectSpace.Vehicle;
 import Server.Collections.Storage;
-import Server.InfoSender;
-
+import Server.Utilities.InfoSender;
+/**
+ * @author Piromant
+ * Реализация команды update
+ */
 public class Update implements Command{
+    /**
+     * @see Storage
+     */
     private Storage storage;
+    /**
+     * Элемент, поля которого будут использованы для обновления другого элемента
+     */
     private Vehicle el;
+    /**
+     * id элемента, который будет обновлен
+     */
     private int id;
+    /**
+     * @see InfoSender
+     */
     private InfoSender infoSender;
 
     public <T extends Vehicle> Update(Storage<T> storage, T el, int id, InfoSender infoSender){
@@ -17,6 +32,9 @@ public class Update implements Command{
         this.infoSender = infoSender;
     }
 
+    /**
+     * Метод, обнавляющий элемент в коллекции по его id и выводящий результат
+     */
     @Override
     public void execute() {
         this.el.setId(id);
@@ -26,7 +44,7 @@ public class Update implements Command{
             this.storage.add(el);
             this.infoSender.sendLine("Элемент обновлен");
         } else {
-            this.infoSender.sendLine("Такого элемента в коллекции нет");
+            this.infoSender.sendLine("Элемента с таким id в коллекции нет");
         }
     }
 }

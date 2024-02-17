@@ -2,12 +2,19 @@ package Server.Commands;
 
 import ObjectSpace.Vehicle;
 import Server.Collections.Storage;
-import Server.InfoSender;
-
-import java.util.TreeSet;
-
+import Server.Utilities.InfoSender;
+/**
+ * @author Piromant
+ * Реализация команды average_of_engine_power
+ */
 public class AverageOfEnginePower implements Command{
+    /**
+     * @see Storage
+     */
     private Storage<? extends Vehicle> storage;
+    /**
+     * @see InfoSender
+     */
     private InfoSender infoSender;
 
     public <T extends Vehicle> AverageOfEnginePower(Storage<T> storage, InfoSender infoSender){
@@ -15,9 +22,14 @@ public class AverageOfEnginePower implements Command{
         this.infoSender = infoSender;
     }
 
+    /**
+     * Метод, выводящий среднее значение силы двигателя по всем элементам коллекции
+     */
     @Override
     public void execute() {
-        double res = this.storage.stream().mapToDouble(Vehicle::getEnginePower).sum() / this.storage.size();
+        double res = this.storage.stream().mapToDouble(Vehicle::getEnginePower).sum();
+        if(res > 0)
+             res /= this.storage.size();
         infoSender.sendLine(res);
     }
 }

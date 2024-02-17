@@ -1,5 +1,10 @@
 package ObjectSpace.Exceptions;
 
+/**
+ * @author Piromant
+ * Класс, расширяющий RuntimeException, обозначающий ошибку в работе с Vehicle
+ * @see ObjectSpace.Vehicle
+ */
 public class VehicleException extends RuntimeException{
     public VehicleException(String msg){
         super(msg);
