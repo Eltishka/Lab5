@@ -1,5 +1,5 @@
-import ObjectSpace.Exceptions.VehicleException;
-import UserInterface.Terminal;
+import objectspace.exceptions.VehicleException;
+import userinterface.Terminal;
 
 /**
  * Точка запуска программы
