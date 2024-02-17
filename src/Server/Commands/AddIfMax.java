@@ -6,8 +6,9 @@ import Server.Utilities.InfoSender;
 
 import java.util.TreeSet;
 /**
- * @author Piromant
+ * 
  * Реализация команды add_if_max
+ * @author Piromant
  */
 public class AddIfMax implements Command{
     /**

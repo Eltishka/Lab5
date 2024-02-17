@@ -6,8 +6,9 @@ import Server.Utilities.InfoSender;
 
 import java.io.FileNotFoundException;
 /**
- * @author Piromant
+ * 
  * Реализация команды save
+ * @author Piromant
  */
 public class Save implements Command{
     /**

@@ -4,8 +4,9 @@ import ObjectSpace.Vehicle;
 import Server.Collections.Storage;
 import Server.Utilities.InfoSender;
 /**
- * @author Piromant
+ * 
  * Реализация команды info
+ * @author Piromant
  */
 public class Info implements Command{
     /**

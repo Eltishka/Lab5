@@ -1,9 +1,9 @@
 package ObjectSpace.Exceptions;
 
 /**
- * @author Piromant
  * Абстрактный класс ошибки при работе аргументами объекта типа Vehicle
  * @see ObjectSpace.Vehicle
+ * @author Piromant
  */
 public abstract class ArgumentVehicleException extends Exception{
 

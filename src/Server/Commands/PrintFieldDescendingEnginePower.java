@@ -8,8 +8,9 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 /**
- * @author Piromant
+ * 
  * Реализация команды print_field_descending_engine_power
+ * @author Piromant
  */
 public class PrintFieldDescendingEnginePower implements Command{
     /**

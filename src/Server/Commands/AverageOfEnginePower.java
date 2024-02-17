@@ -4,8 +4,9 @@ import ObjectSpace.Vehicle;
 import Server.Collections.Storage;
 import Server.Utilities.InfoSender;
 /**
- * @author Piromant
+
  * Реализация команды average_of_engine_power
+ * @author Piromant
  */
 public class AverageOfEnginePower implements Command{
     /**

@@ -9,9 +9,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 /**
- * @author Piromant
+ * 
  * Класс, реализующий интерфейс FileReader, читает файл при помощи InputStreamReader
  * @see FileReader
+ * @author Piromant
  */
 public class FileInputStreamReader implements FileReader {
     InputStreamReader reader;

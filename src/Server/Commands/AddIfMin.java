@@ -6,8 +6,8 @@ import Server.Utilities.InfoSender;
 
 import java.util.TreeSet;
 /**
- * @author Piromant
  * Реализация команды add_if_min
+ * @author Piromant
  */
 public class AddIfMin implements Command{
     /**

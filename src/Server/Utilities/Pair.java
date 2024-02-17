@@ -1,7 +1,8 @@
 package Server.Utilities;
 /**
- * @author Piromant
+ * 
  * Утилитарный класс для хранения двух элементов
+ * @author Piromant
  */
 public class Pair<X, Y> {
     private X first;

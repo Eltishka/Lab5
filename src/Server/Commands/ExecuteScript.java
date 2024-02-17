@@ -13,8 +13,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
 /**
- * @author Piromant
+ * 
  * Реализация команды execute_script
+ * @author Piromant
  */
 public class ExecuteScript implements Command{
     /**

@@ -1,9 +1,9 @@
 package ObjectSpace.Exceptions;
 
 /**
- * @author Piromant
  * Класс, расширяющий ArgumentVehicleException, обозначающий ошибку в работе с силой двигателя
  * @see ObjectSpace.Vehicle
+ * @author Piromant
  */
 public class EnginePowerException extends ArgumentVehicleException{
     public EnginePowerException(String msg, int argumentNumber){

@@ -4,8 +4,9 @@ import ObjectSpace.Vehicle;
 import Server.Collections.Storage;
 import Server.Utilities.InfoSender;
 /**
- * @author Piromant
+ *
  * Реализация команды remove_by_id
+ * @author Piromant
  */
 public class RemoveById implements Command{
     /**

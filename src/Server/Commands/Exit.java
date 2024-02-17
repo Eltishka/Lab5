@@ -1,8 +1,9 @@
 package Server.Commands;
 
 /**
- * @author Piromant
+ * 
  * Реализация команды exit
+ * @author Piromant
  */
 public class Exit implements Command{
     /**

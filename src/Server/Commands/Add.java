@@ -5,8 +5,9 @@ import Server.Collections.Storage;
 import Server.Utilities.InfoSender;
 
 /**
- * @author Piromant
+ * 
  * Реализация команды add
+ * @author Piromant
  */
 public class Add implements Command{
 

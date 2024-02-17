@@ -5,8 +5,9 @@ import ObjectSpace.Vehicle;
 import java.io.IOException;
 import java.util.Collection;
 /**
- * @author Piromant
+ * 
  * Интерфейс для сохранения коллекции
+ * @author Piromant
  */
 public interface FileSaver {
     /**

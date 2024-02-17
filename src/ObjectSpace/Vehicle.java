@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.Random;
 
 /**
- * @author Piromant
  * Класс средства передвижения, объекты которого являются элементами коллекции Storage
  * @see Server.Collections.Storage
  */

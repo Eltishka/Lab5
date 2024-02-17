@@ -4,8 +4,8 @@ import ObjectSpace.Vehicle;
 import Server.Collections.Storage;
 import Server.Utilities.InfoSender;
 /**
- * @author Piromant
  * Реализация команды clear
+ * @author Piromant
  */
 public class Clear implements Command{
     /**

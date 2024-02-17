@@ -7,8 +7,9 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 /**
- * @author Piromant
+ * 
  * Реализация команды history
+ * @author Piromant
  */
 public class History implements Command{
     /**

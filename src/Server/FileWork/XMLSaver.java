@@ -9,8 +9,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 /**
- * @author Piromant
  * Класс, реализующий интерфейс FileSaver, сохраняет коллекцию в XML формате
+ * @author Piromant
  */
 public class XMLSaver implements FileSaver {
 

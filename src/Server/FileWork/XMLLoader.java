@@ -14,6 +14,7 @@ import java.util.*;
 /**
  * Класс, реализующий StorageLoader. Служит для загрузки коллекции из XML-файла
  * @see StorageLoader
+ * @author Piromant
  */
 public class XMLLoader implements StorageLoader{
     /**

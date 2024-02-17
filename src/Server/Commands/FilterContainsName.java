@@ -6,8 +6,9 @@ import Server.Utilities.InfoSender;
 
 import java.util.stream.Collectors;
 /**
- * @author Piromant
+ * 
  * Реализация команды filter_contains_name
+ * @author Piromant
  */
 public class FilterContainsName implements Command{
     /**

@@ -1,8 +1,8 @@
 package ObjectSpace.Exceptions;
 /**
- * @author Piromant
  * Класс, расширяющий ArgumentVehicleException, обозначающий ошибку в работе с координатами
  * @see ObjectSpace.Coordinates
+ * @author Piromant
  */
 public class CoordinatesException extends ArgumentVehicleException{
     public CoordinatesException(String msg, int argumentNumber){

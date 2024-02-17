@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 /**
- * @author Piromant
  * Класс коллекции, расширяющий LinkedHashSet. Основное отличие в хранение и предоставлении даты создания
+ * @author Piromant
  */
 public class Storage<T extends Vehicle> extends LinkedHashSet<T> {
 

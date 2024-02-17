@@ -4,8 +4,9 @@ import Server.Utilities.InfoSender;
 
 import java.util.ArrayList;
 /**
- * @author Piromant
+ * 
  * Реализация команды help
+ * @author Piromant
  */
 public class Help implements Command{
     /**

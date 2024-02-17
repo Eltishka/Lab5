@@ -6,11 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+
 /**
- * @author Piromant
+ * 
  * Интерфейс для чтения комманд из файла
+ * @author Piromant
  */
 public interface FileReader {
+
     /**
      * Метод для открытия файла
      * @param fileName имя файла для чтения

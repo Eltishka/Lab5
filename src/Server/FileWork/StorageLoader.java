@@ -7,6 +7,7 @@ import java.text.ParseException;
 
 /**
  * Интерфейс для загрузки сохраненной коллекции
+ * @author Piromant
  */
 public interface StorageLoader {
     /**

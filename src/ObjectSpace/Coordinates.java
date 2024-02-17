@@ -1,7 +1,6 @@
 package ObjectSpace;
 
 /**
- * @author Piromant
  * Класс координат в формате (x, y)
  */
 public class Coordinates {

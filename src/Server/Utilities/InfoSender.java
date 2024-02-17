@@ -2,8 +2,9 @@ package Server.Utilities;
 
 import java.util.Collection;
 /**
- * @author Piromant
+ * 
  * Интерфейс для отправки информации куда-либо
+ * @author Piromant
  */
 public interface InfoSender {
     /**

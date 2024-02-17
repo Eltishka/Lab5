@@ -2,9 +2,10 @@ package Server.Utilities;
 
 import java.util.Collection;
 /**
- * @author Piromant
+ * 
  * Класс реализующий интерфейс InfoSender, отправляет информацию в стандартный поток вывода
  * @see InfoSender
+ * @author Piromant
  */
 public class OutStreamInfoSender implements InfoSender {
 

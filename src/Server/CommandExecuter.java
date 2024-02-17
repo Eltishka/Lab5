@@ -15,8 +15,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 /**
- * @author Piromant
  * Класс - исполнитель комманд
+ * @author Piromant
  */
 public class CommandExecuter {
 

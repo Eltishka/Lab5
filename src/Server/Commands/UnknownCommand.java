@@ -2,8 +2,9 @@ package Server.Commands;
 
 import Server.Utilities.InfoSender;
 /**
- * @author Piromant
+ * 
  * Реализация "неизветсной" команды, то есть той, которой нет в списке команд
+ * @author Piromant
  */
 public class UnknownCommand implements Command {
     /**

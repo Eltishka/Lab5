@@ -4,8 +4,9 @@ import ObjectSpace.Vehicle;
 import Server.Collections.Storage;
 import Server.Utilities.InfoSender;
 /**
- * @author Piromant
+ * 
  * Реализация команды update
+ * @author Piromant
  */
 public class Update implements Command{
     /**

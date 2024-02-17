@@ -3,8 +3,9 @@ package Server.Commands;
 import Server.Collections.Storage;
 import Server.Utilities.InfoSender;
 /**
- * @author Piromant
+ * 
  * Реализация команды show
+ * @author Piromant
  */
 public class Show implements Command{
     /**
