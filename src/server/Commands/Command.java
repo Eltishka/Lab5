@@ -1,10 +1,10 @@
 package server.Commands;
-
+import server.Response;
 /**
  * 
  * Интерфейс команды, который реализуют все команды
  * @author Piromant
  */
 public interface Command {
-    void execute();
+    Response execute();
 }

@@ -1,5 +1,6 @@
 package server.Commands;
 
+import server.Response;
 import server.utilities.InfoSender;
 
 import java.util.ArrayList;
@@ -9,20 +10,16 @@ import java.util.ArrayList;
  * @author Piromant
  */
 public class Help implements Command{
-    /**
-     * @see InfoSender
-     */
-    InfoSender infoSender;
 
-    public Help(InfoSender infoSender){
-        this.infoSender = infoSender;
+    public Help(){
+
     }
 
     /**
      * Метод, выводящий справку по всем командам
      */
     @Override
-    public void execute() {
+    public Response execute() {
         ArrayList<String> res = new ArrayList<>();
         res.add("help : вывести справку по доступным командам");
         res.add("info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов)");
@@ -40,6 +37,6 @@ public class Help implements Command{
         res.add("average_of_engine_power : вывести среднее значение поля enginePower для всех элементов коллекции");
         res.add("filter_contains_name name : вывести элементы, значение поля name которых содержит заданную подстроку");
         res.add("print_field_descending_engine_power : вывести значения поля enginePower всех элементов в порядке убывания");
-        infoSender.sendMultiLines(res);
+        return new Response(res.toArray());
     }
 }

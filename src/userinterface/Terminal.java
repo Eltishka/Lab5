@@ -40,10 +40,13 @@ public class Terminal {
      */
     private String getArgumentWithRules(String msg, ArgumentChecker<String> checker){
         String arg = "";
-        do{
+        System.out.println(msg);
+        arg = this.sc.nextLine();
+        while (!checker.check(arg)){
+            System.out.println("Неверный формат ввода. Попробуйте еще раз.");
             System.out.println(msg);
             arg = this.sc.nextLine();
-        }while (!checker.check(arg));
+        }
         return arg;
     }
 

@@ -1,6 +1,7 @@
 package server.Commands;
 
 import objectspace.Vehicle;
+import server.Response;
 import server.database.Storage;
 import server.utilities.InfoSender;
 
@@ -14,29 +15,23 @@ import java.util.stream.Collectors;
  */
 public class PrintFieldDescendingEnginePower implements Command{
     /**
-     * @see InfoSender
-     */
-    private InfoSender infoSender;
-    /**
      * @see Storage
      */
     private Storage<? extends Vehicle> storage;
 
-    public <T extends Vehicle> PrintFieldDescendingEnginePower(Storage<T> storage, InfoSender infoSender){
+    public <T extends Vehicle> PrintFieldDescendingEnginePower(Storage<T> storage){
         this.storage = storage;
-        this.infoSender = infoSender;
     }
 
     /**
      * Метод, выводящий все элементы коллекции в порядке убывания их силы двигателя
      */
     @Override
-    public void execute() {
+    public Response execute() {
         if(this.storage.size() == 0){
-            this.infoSender.sendLine("Коллекция пуста");
-            return;
+            return new Response("Коллекция пуста");
         }
         LinkedHashSet<? extends Vehicle> res = this.storage.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toCollection(LinkedHashSet::new));
-        this.infoSender.sendMultiLines(res);
+        return new Response(res.toArray());
     }
 }

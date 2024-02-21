@@ -1,5 +1,6 @@
 package server.Commands;
 
+import server.Response;
 import server.utilities.InfoSender;
 import server.utilities.Pair;
 
@@ -16,21 +17,16 @@ public class History implements Command{
      * История команд в виде пар (Имя, Объект класса команды)
      */
     Deque<Pair<String, Command>> history;
-    /**
-     * @see InfoSender
-     */
-    InfoSender infoSender;
 
-    public History(Deque<Pair<String, Command>> history, InfoSender infoSender){
+    public History(Deque<Pair<String, Command>> history){
         this.history = history;
-        this.infoSender = infoSender;
     }
 
     /**
      * Метод, выводящий последние 7 команд
      */
     @Override
-    public void execute() {
-        this.infoSender.sendMultiLines(history.stream().map(Pair::getFirst).collect(Collectors.toCollection(LinkedList::new)));
+    public Response execute() {
+        return new Response(history.stream().map(Pair::getFirst).collect(Collectors.toCollection(LinkedList::new)).toArray());
     }
 }

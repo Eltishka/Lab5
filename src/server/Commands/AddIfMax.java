@@ -1,6 +1,7 @@
 package server.Commands;
 
 import objectspace.Vehicle;
+import server.Response;
 import server.database.Storage;
 import server.utilities.InfoSender;
 
@@ -19,26 +20,23 @@ public class AddIfMax implements Command{
      * Элемент, который добавляется в колекцию
      */
     private Vehicle el;
-    /**
-     * @see InfoSender
-     */
-    private InfoSender infoSender;
 
-    public <T extends Vehicle> AddIfMax(Storage<T> storage, T el, InfoSender infoSender){
+
+    public <T extends Vehicle> AddIfMax(Storage<T> storage, T el){
         this.storage = storage;
         this.el = el;
-        this.infoSender = infoSender;
     }
 
     /**
      * Метод, добавляющий элемент в коллекцию в случае, если его сила двигателя больше, чем у любого элемента коллекции, и выводящий результат (добавлен или не добавлен)
+     * @return
      */
     @Override
-    public void execute() {
+    public Response execute() {
         TreeSet<Vehicle> sortedCollection = new TreeSet<>(storage);
         if(this.storage.size() == 0 || sortedCollection.last().compareTo(el) < 0)
-            new Add(this.storage, this.el, this.infoSender).execute();
+            return (new Add(this.storage, this.el)).execute();
         else
-            this.infoSender.sendLine("Элемент не был добавлен");
+            return new Response("Элемент не был добавлен");
     }
 }

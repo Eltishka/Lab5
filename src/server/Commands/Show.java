@@ -1,5 +1,6 @@
 package server.Commands;
 
+import server.Response;
 import server.database.Storage;
 import server.utilities.InfoSender;
 /**
@@ -12,24 +13,20 @@ public class Show implements Command{
      * @see Storage
      */
     private Storage storage;
-    /**
-     * @see InfoSender
-     */
-    private InfoSender infoSender;
 
-    public Show(Storage storage, InfoSender infoSender){
+
+    public Show(Storage storage){
         this.storage = storage;
-        this.infoSender = infoSender;
     }
 
     /**
      * Метод, выводящий все элементы коллекции в порядке их добавления
      */
     @Override
-    public void execute() {
+    public Response execute() {
         if(storage.size() > 0)
-            this.infoSender.sendMultiLines(storage);
+            return new Response(storage.toArray());
         else
-            this.infoSender.sendLine("В коллекции нет элементов");
+            return new Response("В коллекции нет элементов");
     }
 }

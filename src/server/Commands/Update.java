@@ -1,6 +1,7 @@
 package server.Commands;
 
 import objectspace.Vehicle;
+import server.Response;
 import server.database.Storage;
 import server.utilities.InfoSender;
 /**
@@ -21,31 +22,26 @@ public class Update implements Command{
      * id элемента, который будет обновлен
      */
     private int id;
-    /**
-     * @see InfoSender
-     */
-    private InfoSender infoSender;
 
-    public <T extends Vehicle> Update(Storage<T> storage, T el, int id, InfoSender infoSender){
+    public <T extends Vehicle> Update(Storage<T> storage, T el, int id){
         this.storage = storage;
         this.el = el;
         this.id = id;
-        this.infoSender = infoSender;
     }
 
     /**
      * Метод, обнавляющий элемент в коллекции по его id и выводящий результат
      */
     @Override
-    public void execute() {
+    public Response execute() {
         this.el.setId(id);
         boolean res = this.storage.remove(el);
 
         if(res) {
             this.storage.add(el);
-            this.infoSender.sendLine("Элемент обновлен");
+            return new Response("Элемент обновлен");
         } else {
-            this.infoSender.sendLine("Элемента с таким id в коллекции нет");
+            return new Response("Элемента с таким id в коллекции нет");
         }
     }
 }

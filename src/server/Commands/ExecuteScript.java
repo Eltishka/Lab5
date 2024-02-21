@@ -4,6 +4,7 @@ import objectspace.exceptions.ArgumentVehicleException;
 import objectspace.exceptions.VehicleException;
 import server.CommandExecuter;
 import server.Request;
+import server.Response;
 import server.filework.FileReader;
 import server.utilities.InfoSender;
 import server.utilities.Pair;
@@ -31,38 +32,32 @@ public class ExecuteScript implements Command{
      * Имя файла, из которого читаются команды
      */
     private String fileName;
-    /**
-     * @see InfoSender
-     */
-    private InfoSender infoSender;
 
-    public ExecuteScript(FileReader fileReader, String fileName, InfoSender infoSender){
+
+    public ExecuteScript(FileReader fileReader, String fileName){
         this.commandExecuter = CommandExecuter.getAccess();
         this.fileReader = fileReader;
         this.fileName = fileName;
-        this.infoSender = infoSender;
     }
     /**
      * Метод, считывающий команды с файла и проверяющий их на валидность, затем передающий их в исполнитель команд для исполнения
      */
     @Override
-    public void execute() {
+    public Response execute() {
 
         LinkedList<Pair<String, ArrayList<String>>> commandList = new LinkedList<>();
         try {
             commandList = fileReader.readCommandsFromFile(fileName);
         } catch (FileNotFoundException | NullPointerException e) {
-            infoSender.sendLine("Файл не найден");
-            return;
+            return new Response("Файл не найден");
         } catch (SecurityException e){
-            infoSender.sendLine("Не хватает прав для доступа к файлу");
-            return;
+            return new Response("Не хватает прав для доступа к файлу");
         } catch (IOException e){
-            infoSender.sendLine(e.getStackTrace());
-            return;
+            return new Response(e.getStackTrace());
         }
 
         ListIterator<Pair<String, ArrayList<String>>> it = commandList.listIterator();
+        LinkedList<String> response = new LinkedList<>();
         try {
             while (it.hasNext()) {
                 Pair<String, ArrayList<String>> command = it.next();
@@ -70,29 +65,29 @@ public class ExecuteScript implements Command{
                 this.commandExecuter.executeCommand(request);
                 //this.commandExecuter.executeCommand(command.getFirst(), command.getSecond());
             }
-            this.infoSender.sendLine("Скрипт Выполнен");
+            response.add("Скрипт Выполнен");
         }
         catch (VehicleException e){
             int commandError = it.previousIndex();
-            this.infoSender.sendLine("Скрипт Выполнен до "+ (commandError + 1) + " строки:");
-            this.infoSender.sendLine("Ошибка в команде на " + (commandError + 1) + " строке: " + e.getMessage());
+            response.add("Скрипт Выполнен до "+ (commandError + 1) + " строки:");
+            response.add("Ошибка в команде на " + (commandError + 1) + " строке: " + e.getMessage());
             Throwable cause = e.getCause();
             if(cause instanceof ArgumentVehicleException){
                 int errorLine = commandError + ((ArgumentVehicleException) cause).argumentNumber + 1;
-                this.infoSender.sendLine("Строка " + errorLine + ": " + cause.getMessage());
+                response.add("Строка " + errorLine + ": " + cause.getMessage());
             }
             else if(cause instanceof IllegalArgumentException){
-                this.infoSender.sendLine("Требуется 5 аргументов соответствующих требованиям");
+                response.add("Требуется 5 аргументов соответствующих требованиям");
             }
             else{
-                this.infoSender.sendLine("Непредвиденная ошибка");
-                this.infoSender.sendLine(e.getMessage());
+                response.add("Непредвиденная ошибка");
+                response.add(e.getMessage());
             }
         }
         catch (NumberFormatException e){
             int commandError = it.previousIndex();
-            this.infoSender.sendLine("Аргумент команды на " + (commandError + 1) + " строке должен быть целым числом меньшим 2^32");
+            response.add("Аргумент команды на " + (commandError + 1) + " строке должен быть целым числом меньшим 2^32");
         }
-
+        return new Response(response.toArray());
     }
 }

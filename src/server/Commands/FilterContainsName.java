@@ -1,6 +1,7 @@
 package server.Commands;
 
 import objectspace.Vehicle;
+import server.Response;
 import server.database.Storage;
 import server.utilities.InfoSender;
 
@@ -19,28 +20,23 @@ public class FilterContainsName implements Command{
      * Строка, содержание которой проверяется в именах элементов
      */
     private String pattern;
-    /**
-     * @see InfoSender
-     */
-    private InfoSender infoSender;
 
-    public <T extends Vehicle> FilterContainsName(Storage<T> storage, String pattern, InfoSender infoSender){
+    public <T extends Vehicle> FilterContainsName(Storage<T> storage, String pattern){
         this.pattern = pattern;
         this.storage = storage;
-        this.infoSender = infoSender;
     }
 
     /**
      * Метод, выводящий все элементы коллекции, имена которых содержат заданную строку pattern
      */
     @Override
-    public void execute() {
-        Storage<? extends Vehicle> res = this.storage.stream().filter(el -> el.getName().contains(this.pattern)).collect(Collectors.toCollection(Storage::new));
+    public Response execute() {
+        Storage<? extends Vehicle> res = this.storage.stream().filter(el -> el.getName()
+                .contains(this.pattern)).collect(Collectors.toCollection(Storage::new));
         if(res.size() == 0){
-            this.infoSender.sendLine("Совпадений не обнаружено");
-            return;
+            return new Response("Совпадений не обнаружено");
         }
-        infoSender.sendMultiLines(res);
+        return new Response(res.toArray());
     }
 
 }

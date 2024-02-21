@@ -1,6 +1,7 @@
 package server.Commands;
 
 import objectspace.Vehicle;
+import server.Response;
 import server.database.Storage;
 import server.utilities.InfoSender;
 /**
@@ -17,26 +18,21 @@ public class RemoveById implements Command{
      * id элемента, который будет удален
      */
     private int id;
-    /**
-     * @see InfoSender
-     */
-    private InfoSender infoSender;
 
-    public RemoveById(Storage storage, int id, InfoSender infoSender){
+    public RemoveById(Storage storage, int id){
         this.storage = storage;
         this.id = id;
-        this.infoSender = infoSender;
     }
 
     /**
      * Метод, удаляющий элемент по его id и выводящий результат операци
      */
     @Override
-    public void execute() {
+    public Response execute() {
         boolean res = this.storage.remove(new Vehicle(this.id));
         if(res)
-            this.infoSender.sendLine("Элемент удален");
+            return new Response("Элемент удален");
         else
-            this.infoSender.sendLine("Элемента с таким id в коллекции нет");
+            return new Response("Элемента с таким id в коллекции нет");
     }
 }

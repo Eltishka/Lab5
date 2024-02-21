@@ -1,6 +1,7 @@
 package server.Commands;
 
 import objectspace.Vehicle;
+import server.Response;
 import server.database.Storage;
 import server.utilities.InfoSender;
 
@@ -19,26 +20,20 @@ public class Add implements Command{
      * Элемент, который добавляется в колекцию
      */
     private Vehicle el;
-    /**
-     * @see InfoSender
-     */
-    private InfoSender infoSender;
 
-
-    public <T extends Vehicle> Add(Storage<T> storage, T el, InfoSender infoSender){
+    public <T extends Vehicle> Add(Storage<T> storage, T el){
         this.storage = storage;
         this.el = el;
-        this.infoSender = infoSender;
     }
 
     /**
      * Метод, добавляющий элемент в коллекцию и выводящий результат (добавлен или не добавлен)
      */
     @Override
-    public void execute() {
+    public Response execute() {
         if(this.storage.add(el))
-            this.infoSender.sendLine("Элемент добавлен");
+            return new Response("Элемент добавлен");
         else
-            this.infoSender.sendLine("Элемент не был добавлен");
+            return new Response("Элемент не был добавлен");
     }
 }

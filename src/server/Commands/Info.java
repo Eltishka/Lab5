@@ -1,34 +1,37 @@
 package server.Commands;
 
 import objectspace.Vehicle;
+import server.Response;
 import server.database.Storage;
 import server.utilities.InfoSender;
+
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * 
  * Реализация команды info
  * @author Piromant
  */
 public class Info implements Command{
-    /**
-     * @see InfoSender
-     */
-    private InfoSender infoSender;
+
     /**
      * @see Storage
      */
     private Storage storage;
 
-    public <T extends Vehicle> Info(Storage<T> storage, InfoSender infoSender){
+    public <T extends Vehicle> Info(Storage<T> storage){
         this.storage = storage;
-        this.infoSender = infoSender;
     }
     /**
      * Метод, выводящий типа, дату создания и количество элементов коллекци
      */
     @Override
-    public void execute() {
-        this.infoSender.sendLine("Тип коллекции " + storage.getClass());
-        this.infoSender.sendLine("Дата создания " + this.storage.getCreationDate());
-        this.infoSender.sendLine("Количество элементов " + storage.size());
+    public Response execute() {
+        List<String> response = new LinkedList<>();
+        response.add("Тип коллекции " + storage.getClass());
+        response.add("Дата создания " + this.storage.getCreationDate());
+        response.add("Количество элементов " + storage.size());
+        return new Response(response.toArray());
     }
 }

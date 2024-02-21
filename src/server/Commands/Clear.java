@@ -1,6 +1,7 @@
 package server.Commands;
 
 import objectspace.Vehicle;
+import server.Response;
 import server.database.Storage;
 import server.utilities.InfoSender;
 /**
@@ -13,22 +14,17 @@ public class Clear implements Command{
      */
     private Storage storage;
 
-    /**
-     * @see InfoSender
-     */
-    private InfoSender infoSender;
 
-    public <T extends Vehicle> Clear(Storage<T> storage, InfoSender infoSender){
+    public <T extends Vehicle> Clear(Storage<T> storage){
         this.storage = storage;
-        this.infoSender = infoSender;
     }
 
     /**
      * Метод, очищающий коллекцию
      */
     @Override
-    public void execute() {
+    public Response execute() {
         this.storage.clear();
-        this.infoSender.sendLine("Коллекция очищена");
+        return new Response("Коллекция очищена");
     }
 }

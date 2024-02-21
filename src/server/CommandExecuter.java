@@ -11,6 +11,7 @@ import server.filework.*;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 /**
  * Класс - исполнитель комманд
@@ -63,6 +64,9 @@ public class CommandExecuter {
             //e.printStackTrace();
             infoSender.sendLine("Невозможно загрузить коллекцию из файла. Файл должен сущетсвовать, имя файла должно хранится в переменной окружения SAVEFILE");
             this.storage = new Storage<>();
+        } catch (Exception e){
+            this.infoSender.sendLine("Невозможно заргузить коллекцию. Ошибка в файле");
+            this.storage = new Storage<>();
         }
 
 
@@ -81,26 +85,27 @@ public class CommandExecuter {
 
 
         Command commandToExecute = switch (command_name) {
-            case("help") -> new Help(this.infoSender);
-            case("info") -> new Info(this.storage, this.infoSender);
-            case("show") -> new Show(this.storage, this.infoSender);
-            case("add") -> new Add(this.storage, v, this.infoSender);
-            case("update") -> new Update(this.storage, v, Integer.parseInt(argument), this.infoSender);
-            case("remove_by_id") -> new RemoveById(this.storage, Integer.parseInt(argument), this.infoSender);
-            case("clear") -> new Clear(this.storage, this.infoSender);
-            case("save") -> new Save(this.fileSaver, System.getenv("SAVEFILE"), this.storage, this.infoSender);
-            case("execute_script") -> new ExecuteScript(this.fileReader, argument, this.infoSender);
+            case("help") -> new Help();
+            case("info") -> new Info(this.storage);
+            case("show") -> new Show(this.storage);
+            case("add") -> new Add(this.storage, v);
+            case("update") -> new Update(this.storage, v, Integer.parseInt(argument));
+            case("remove_by_id") -> new RemoveById(this.storage, Integer.parseInt(argument));
+            case("clear") -> new Clear(this.storage);
+            case("save") -> new Save(this.fileSaver, System.getenv("SAVEFILE"), this.storage);
+            case("execute_script") -> new ExecuteScript(this.fileReader, argument);
             case("exit") -> new Exit();
-            case("add_if_max") -> new AddIfMax(this.storage, v, this.infoSender);
-            case("add_if_min") -> new AddIfMin(this.storage, v, this.infoSender);
-            case("history") -> new History(this.history, this.infoSender);
-            case("average_of_engine_power") -> new AverageOfEnginePower(this.storage, this.infoSender);
-            case("filter_contains_name") -> new FilterContainsName(this.storage, argument, this.infoSender);
-            case("print_field_descending_engine_power") -> new PrintFieldDescendingEnginePower(this.storage, this.infoSender);
-            default -> new UnknownCommand(command_name, this.infoSender);
+            case("add_if_max") -> new AddIfMax(this.storage, v);
+            case("add_if_min") -> new AddIfMin(this.storage, v);
+            case("history") -> new History(this.history);
+            case("average_of_engine_power") -> new AverageOfEnginePower(this.storage);
+            case("filter_contains_name") -> new FilterContainsName(this.storage, argument);
+            case("print_field_descending_engine_power") -> new PrintFieldDescendingEnginePower(this.storage);
+            default -> new UnknownCommand(command_name);
         };
 
-        commandToExecute.execute();
+        Response response = commandToExecute.execute();
+        this.infoSender.sendMultiLines(Arrays.asList(response.getResponse()));
 
         if(!(commandToExecute instanceof UnknownCommand))
             this.writeCommandToHistory(new Pair<>(command_name, commandToExecute));

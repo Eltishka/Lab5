@@ -1,5 +1,7 @@
 package server.Commands;
 
+import server.Response;
+
 /**
  * 
  * Реализация команды exit
@@ -10,7 +12,8 @@ public class Exit implements Command{
      * Метод, завершающий работу программы без сохранения коллекции
      */
     @Override
-    public void execute() {
+    public Response execute() {
         System.exit(0);
+        return new Response();
     }
 }

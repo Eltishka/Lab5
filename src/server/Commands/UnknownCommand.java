@@ -1,5 +1,6 @@
 package server.Commands;
 
+import server.Response;
 import server.utilities.InfoSender;
 /**
  * 
@@ -7,16 +8,12 @@ import server.utilities.InfoSender;
  * @author Piromant
  */
 public class UnknownCommand implements Command {
-    /**
-     * @see InfoSender
-     */
-    private InfoSender infoSender;
+
     /**
      * Имя несуществующей команды
      */
     private String command;
-    public UnknownCommand(String command, InfoSender infoSender){
-        this.infoSender = infoSender;
+    public UnknownCommand(String command){
         this.command = command;
     }
 
@@ -24,7 +21,7 @@ public class UnknownCommand implements Command {
      * Метод, выводящий информацию о несуществовании команды
      */
     @Override
-    public void execute() {
-        this.infoSender.sendLine("команды \"" + this.command + "\" нет, чтобы вывести список комманд используйте help");
+    public Response execute() {
+        return new Response("команды \"" + this.command + "\" нет, чтобы вывести список комманд используйте help");
     }
 }
