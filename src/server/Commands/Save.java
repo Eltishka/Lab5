@@ -1,8 +1,10 @@
 package server.Commands;
 
+import objectspace.Vehicle;
 import server.Response;
 import server.database.Storage;
 import server.filework.FileSaver;
+import server.filework.XMLSaver;
 import server.utilities.InfoSender;
 
 import java.io.FileNotFoundException;
@@ -14,24 +16,21 @@ import java.util.List;
  * Реализация команды save
  * @author Piromant
  */
-public class Save implements Command{
+public class Save extends Command{
     /**
      * @see FileSaver
      */
     private final FileSaver fileSaver;
     /**
-     * @see Storage
-     */
-    private final Storage storage;
-    /**
      * Имя файла, в который будет сохранена коллекция
      */
-    private final String fileName;
+    //private final String fileName;
 
-    public Save(FileSaver fileSaver, String fileName, Storage storage){
-        this.fileSaver = fileSaver;
-        this.storage = storage;
-        this.fileName = fileName;
+
+    public <T extends Vehicle> Save(Storage<T> storage, String argument, T el) {
+        super(storage, argument, el);
+        this.argument = System.getenv("SAVEFILE");
+        this.fileSaver = new XMLSaver();
     }
 
     /**
@@ -41,7 +40,7 @@ public class Save implements Command{
     public Response execute() {
         List<String> response = new LinkedList<>();
         try {
-            this.fileSaver.save(fileName, this.storage);
+            this.fileSaver.save(this.argument, this.storage);
             response.add("Файл сохранен");
         } catch (FileNotFoundException e) {
             response.add("Файл не найден");
@@ -56,5 +55,10 @@ public class Save implements Command{
         }
         return new Response(response.toArray());
 
+    }
+
+    @Override
+    public String getHelp() {
+        return "Сохраняет коллекцию в файл, имя которого передается путем чтения значения переменной окружения SAVEFILE, оттуда же загружается коллекция при старте программы";
     }
 }

@@ -13,16 +13,12 @@ import java.util.List;
  * Реализация команды info
  * @author Piromant
  */
-public class Info implements Command{
+public class Info extends Command{
 
-    /**
-     * @see Storage
-     */
-    private Storage storage;
-
-    public <T extends Vehicle> Info(Storage<T> storage){
-        this.storage = storage;
+    public <T extends Vehicle> Info(Storage<T> storage, String argument, T el) {
+        super(storage, argument, el);
     }
+
     /**
      * Метод, выводящий типа, дату создания и количество элементов коллекци
      */
@@ -33,5 +29,10 @@ public class Info implements Command{
         response.add("Дата создания " + this.storage.getCreationDate());
         response.add("Количество элементов " + storage.size());
         return new Response(response.toArray());
+    }
+
+    @Override
+    public String getHelp() {
+        return "Выводит в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов)";
     }
 }

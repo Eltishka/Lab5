@@ -1,5 +1,7 @@
 package server.database;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import objectspace.Vehicle;
 
 import java.util.Collection;
@@ -14,6 +16,7 @@ public class Storage<T extends Vehicle> extends LinkedHashSet<T> {
     /**
      * ДАта создания коллекции
      */
+    @JacksonXmlCData
     private Date creationDate;
     public Storage(Collection<T> collection) {
         super(collection);
@@ -29,4 +32,7 @@ public class Storage<T extends Vehicle> extends LinkedHashSet<T> {
         return creationDate;
     }
 
+    public void setCreationDate(Date date) {
+        this.creationDate = creationDate;
+    }
 }

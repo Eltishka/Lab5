@@ -11,19 +11,14 @@ import java.util.stream.Collectors;
  * Реализация команды filter_contains_name
  * @author Piromant
  */
-public class FilterContainsName implements Command{
+public class FilterContainsName extends Command{
     /**
      * @see Storage
      */
     private Storage<? extends Vehicle> storage;
-    /**
-     * Строка, содержание которой проверяется в именах элементов
-     */
-    private String pattern;
 
-    public <T extends Vehicle> FilterContainsName(Storage<T> storage, String pattern){
-        this.pattern = pattern;
-        this.storage = storage;
+    public <T extends Vehicle> FilterContainsName(Storage<T> storage, String argument, T el) {
+        super(storage, argument, el);
     }
 
     /**
@@ -32,11 +27,16 @@ public class FilterContainsName implements Command{
     @Override
     public Response execute() {
         Storage<? extends Vehicle> res = this.storage.stream().filter(el -> el.getName()
-                .contains(this.pattern)).collect(Collectors.toCollection(Storage::new));
+                .contains(this.argument)).collect(Collectors.toCollection(Storage::new));
         if(res.size() == 0){
             return new Response("Совпадений не обнаружено");
         }
         return new Response(res.toArray());
+    }
+
+    @Override
+    public String getHelp() {
+        return "Выводит элементы, значение поля name которых содержит заданную подстроку";
     }
 
 }

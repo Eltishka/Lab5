@@ -4,3 +4,8 @@ asd
 212121
 PLANE
 NUCLEAR
+execute_script C:\Users\Piromant\Desktop\a\Lab5\src\d.txt
+1) lombok + 
+2) jackson ?xml? +
+3) генератор id +
+4) invoker

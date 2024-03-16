@@ -1,10 +1,13 @@
 package server.Commands;
 
+import objectspace.Vehicle;
 import objectspace.exceptions.ArgumentVehicleException;
 import objectspace.exceptions.VehicleException;
 import server.CommandExecuter;
 import server.Request;
 import server.Response;
+import server.database.Storage;
+import server.filework.FileInputStreamReader;
 import server.filework.FileReader;
 import server.utilities.InfoSender;
 import server.utilities.Pair;
@@ -19,7 +22,7 @@ import java.util.ListIterator;
  * Реализация команды execute_script
  * @author Piromant
  */
-public class ExecuteScript implements Command{
+public class ExecuteScript extends Command{
     /**
      * @see CommandExecuter
      */
@@ -28,16 +31,12 @@ public class ExecuteScript implements Command{
      * @see FileReader
      */
     private FileReader fileReader;
-    /**
-     * Имя файла, из которого читаются команды
-     */
-    private String fileName;
 
 
-    public ExecuteScript(FileReader fileReader, String fileName){
+    public <T extends Vehicle> ExecuteScript(Storage storage, String argument, T el){
+        super(storage, argument, el);
         this.commandExecuter = CommandExecuter.getAccess();
-        this.fileReader = fileReader;
-        this.fileName = fileName;
+        this.fileReader = new FileInputStreamReader();
     }
     /**
      * Метод, считывающий команды с файла и проверяющий их на валидность, затем передающий их в исполнитель команд для исполнения
@@ -47,7 +46,7 @@ public class ExecuteScript implements Command{
 
         LinkedList<Pair<String, ArrayList<String>>> commandList = new LinkedList<>();
         try {
-            commandList = fileReader.readCommandsFromFile(fileName);
+            commandList = fileReader.readCommandsFromFile(argument);
         } catch (FileNotFoundException | NullPointerException e) {
             return new Response("Файл не найден");
         } catch (SecurityException e){
@@ -61,8 +60,11 @@ public class ExecuteScript implements Command{
         try {
             while (it.hasNext()) {
                 Pair<String, ArrayList<String>> command = it.next();
-                Request request = new Request(command.getFirst(), command.getSecond());
-                this.commandExecuter.executeCommand(request);
+                Request request = new Request(command.getFirst(), command.getSecond(), this);
+                if(command.getFirst().equals("execute_script " + argument))
+                    response.add("Скрипт вызывает сам себя. Комманда вызова скрипта в скрипте была пропущена");
+                else
+                    this.commandExecuter.executeCommand(request);
                 //this.commandExecuter.executeCommand(command.getFirst(), command.getSecond());
             }
             response.add("Скрипт Выполнен");
@@ -89,5 +91,10 @@ public class ExecuteScript implements Command{
             response.add("Аргумент команды на " + (commandError + 1) + " строке должен быть целым числом меньшим 2^32");
         }
         return new Response(response.toArray());
+    }
+
+    @Override
+    public String getHelp() {
+        return "Считывает и исполняет скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.";
     }
 }

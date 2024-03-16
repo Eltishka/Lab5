@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 /**
  * Класс - исполнитель комманд
@@ -29,7 +30,7 @@ public class CommandExecuter {
      * @see Pair
      */
     private LinkedList<Pair<String, Command>> history;
-
+    private Invoker invoker;
     /** @see FileReader */
     private FileReader fileReader;
     /** @see InfoSender */
@@ -37,6 +38,7 @@ public class CommandExecuter {
     /** @see FileSaver */
     private FileSaver fileSaver;
 
+    private LinkedList<String> executedRecursionScript = new LinkedList<>();
     /**
      * Статический метод, предоставляющий доступ к экземпляру класса исполнителя комманд
      */
@@ -53,7 +55,7 @@ public class CommandExecuter {
      * @see XMLLoader
      */
     private CommandExecuter()  {
-
+        this.invoker = Invoker.getAccess();
         this.history = new LinkedList<>();
         this.infoSender = new OutStreamInfoSender();
         this.fileReader = new FileInputStreamReader();
@@ -61,8 +63,7 @@ public class CommandExecuter {
         try {
             this.storage = (new XMLLoader(fileReader, System.getenv("SAVEFILE"))).loadStorage();
         } catch (IOException | ParseException | NullPointerException e){
-            //e.printStackTrace();
-            infoSender.sendLine("Невозможно загрузить коллекцию из файла. Файл должен сущетсвовать, имя файла должно хранится в переменной окружения SAVEFILE");
+            infoSender.sendLine("Невозможно загрузить коллекцию из файла. Файл должен сущетсвовать, имя файла должно хранится в переменной окружения SAVEFILE. Возможно ошибка в xml-тэгах");
             this.storage = new Storage<>();
         } catch (Exception e){
             this.infoSender.sendLine("Невозможно заргузить коллекцию. Ошибка в файле");
@@ -84,31 +85,24 @@ public class CommandExecuter {
         Vehicle v = request.element;
 
 
-        Command commandToExecute = switch (command_name) {
-            case("help") -> new Help();
-            case("info") -> new Info(this.storage);
-            case("show") -> new Show(this.storage);
-            case("add") -> new Add(this.storage, v);
-            case("update") -> new Update(this.storage, v, Integer.parseInt(argument));
-            case("remove_by_id") -> new RemoveById(this.storage, Integer.parseInt(argument));
-            case("clear") -> new Clear(this.storage);
-            case("save") -> new Save(this.fileSaver, System.getenv("SAVEFILE"), this.storage);
-            case("execute_script") -> new ExecuteScript(this.fileReader, argument);
-            case("exit") -> new Exit();
-            case("add_if_max") -> new AddIfMax(this.storage, v);
-            case("add_if_min") -> new AddIfMin(this.storage, v);
-            case("history") -> new History(this.history);
-            case("average_of_engine_power") -> new AverageOfEnginePower(this.storage);
-            case("filter_contains_name") -> new FilterContainsName(this.storage, argument);
-            case("print_field_descending_engine_power") -> new PrintFieldDescendingEnginePower(this.storage);
-            default -> new UnknownCommand(command_name);
-        };
-
+        Command commandToExecute = this.invoker.getCommandToExecute(command_name, this.storage, argument, v, this.history);
+        if(request.sender instanceof ExecuteScript) {
+            if (commandToExecute instanceof ExecuteScript) {
+                if (executedRecursionScript.contains(argument)) {
+                    this.infoSender.sendLine("Рекурсия в скрипте! Инструкция пропущена. Скрипт продолжается...");
+                    return;
+                }
+                this.executedRecursionScript.add(argument);
+            }
+        } else{
+            this.executedRecursionScript.clear();
+        }
         Response response = commandToExecute.execute();
         this.infoSender.sendMultiLines(Arrays.asList(response.getResponse()));
 
         if(!(commandToExecute instanceof UnknownCommand))
             this.writeCommandToHistory(new Pair<>(command_name, commandToExecute));
+
     }
 
     /**
@@ -121,5 +115,11 @@ public class CommandExecuter {
         this.history.add(command);
     }
 
+    public boolean checkIfNeedElement(String commandName){
+        return CommandUsingElement.class.isAssignableFrom(this.invoker.get(commandName));
+    }
 
+    public boolean checkIfNeedId(String commandName){
+        return CommandWithId.class.isAssignableFrom(this.invoker.get(commandName));
+    }
 }

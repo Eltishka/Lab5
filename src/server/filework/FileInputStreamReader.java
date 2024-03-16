@@ -90,7 +90,7 @@ public class FileInputStreamReader implements FileReader {
     public String readWholeFile(String fileName) throws IOException, NullPointerException {
 
         this.openFile(fileName);
-        String res = new String();
+        String res = "";
         String str = readLine();
         while (str != null){
             res = res.concat(str + '\n');

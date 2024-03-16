@@ -9,14 +9,10 @@ import server.utilities.InfoSender;
  * Реализация команды average_of_engine_power
  * @author Piromant
  */
-public class AverageOfEnginePower implements Command{
-    /**
-     * @see Storage
-     */
-    private Storage<? extends Vehicle> storage;
+public class AverageOfEnginePower extends Command{
 
-    public <T extends Vehicle> AverageOfEnginePower(Storage<T> storage){
-        this.storage = storage;
+    public <T extends Vehicle> AverageOfEnginePower(Storage<T> storage, String argument, T el) {
+        super(storage, argument, el);
     }
 
     /**
@@ -24,9 +20,14 @@ public class AverageOfEnginePower implements Command{
      */
     @Override
     public Response execute() {
-        double res = this.storage.stream().mapToDouble(Vehicle::getEnginePower).sum();
+        double res = ((Storage<? super Vehicle>)(this.storage)).stream().mapToDouble(Vehicle::getEnginePower).sum();
         if(res > 0)
              res /= this.storage.size();
         return new Response(res);
+    }
+
+    @Override
+    public String getHelp() {
+        return "Выводит среднее значение поля enginePower для всех элементов коллекции";
     }
 }

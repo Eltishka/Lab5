@@ -3,6 +3,10 @@ package server;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Класс ответа команды
+ * @author Piromant
+ */
 public class Response {
 
     private final Object[] response;

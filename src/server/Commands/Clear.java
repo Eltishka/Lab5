@@ -8,15 +8,11 @@ import server.utilities.InfoSender;
  * Реализация команды clear
  * @author Piromant
  */
-public class Clear implements Command{
-    /**
-     * @see Storage
-     */
-    private Storage storage;
+public class Clear extends Command{
 
 
-    public <T extends Vehicle> Clear(Storage<T> storage){
-        this.storage = storage;
+    public <T extends Vehicle> Clear(Storage<T> storage, String argument, T el) {
+        super(storage, argument, el);
     }
 
     /**
@@ -26,5 +22,10 @@ public class Clear implements Command{
     public Response execute() {
         this.storage.clear();
         return new Response("Коллекция очищена");
+    }
+
+    @Override
+    public String getHelp() {
+        return "Очищает коллекцию";
     }
 }

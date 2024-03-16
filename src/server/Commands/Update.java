@@ -9,24 +9,10 @@ import server.utilities.InfoSender;
  * Реализация команды update
  * @author Piromant
  */
-public class Update implements Command{
-    /**
-     * @see Storage
-     */
-    private Storage storage;
-    /**
-     * Элемент, поля которого будут использованы для обновления другого элемента
-     */
-    private Vehicle el;
-    /**
-     * id элемента, который будет обновлен
-     */
-    private int id;
+public class Update extends Command implements CommandUsingElement, CommandWithId{
 
-    public <T extends Vehicle> Update(Storage<T> storage, T el, int id){
-        this.storage = storage;
-        this.el = el;
-        this.id = id;
+    public <T extends Vehicle> Update(Storage<T> storage, String argument, T el) {
+        super(storage, argument, el);
     }
 
     /**
@@ -34,7 +20,7 @@ public class Update implements Command{
      */
     @Override
     public Response execute() {
-        this.el.setId(id);
+        this.el.setId(Integer.parseInt(argument));
         boolean res = this.storage.remove(el);
 
         if(res) {
@@ -43,5 +29,10 @@ public class Update implements Command{
         } else {
             return new Response("Элемента с таким id в коллекции нет");
         }
+    }
+
+    @Override
+    public String getHelp() {
+        return "Обновляет значение элемента коллекции, id которого равен заданному";
     }
 }

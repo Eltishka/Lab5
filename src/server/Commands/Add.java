@@ -10,20 +10,10 @@ import server.utilities.InfoSender;
  * Реализация команды add
  * @author Piromant
  */
-public class Add implements Command{
+public class Add extends Command implements CommandUsingElement{
 
-    /**
-     * @see Storage
-     */
-    private Storage storage;
-    /**
-     * Элемент, который добавляется в колекцию
-     */
-    private Vehicle el;
-
-    public <T extends Vehicle> Add(Storage<T> storage, T el){
-        this.storage = storage;
-        this.el = el;
+    public <T extends Vehicle> Add(Storage<T> storage, String argument, T el) {
+        super(storage, argument, el);
     }
 
     /**
@@ -35,5 +25,10 @@ public class Add implements Command{
             return new Response("Элемент добавлен");
         else
             return new Response("Элемент не был добавлен");
+    }
+
+    @Override
+    public String getHelp() {
+        return "добавляет новый элемент в коллекцию, ввод элемента осущестлявется в следующих 5 строках";
     }
 }

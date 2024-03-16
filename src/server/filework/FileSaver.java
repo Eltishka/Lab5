@@ -1,6 +1,7 @@
 package server.filework;
 
 import objectspace.Vehicle;
+import server.database.Storage;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -17,5 +18,5 @@ public interface FileSaver {
      * @throws IOException
      * @throws SecurityException
      */
-    void save(String fileName, Collection<Vehicle> arr) throws IOException, SecurityException;
+    void save(String fileName, Storage<Vehicle> arr) throws IOException, SecurityException;
 }

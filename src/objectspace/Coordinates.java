@@ -1,16 +1,20 @@
 package objectspace;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * Класс координат в формате (x, y)
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Coordinates {
     private Double x; //Поле не может быть null
     private Long y; //Поле не может быть null
-
-    public Coordinates(Double x, Long y) {
-        this.x = x;
-        this.y = y;
-    }
 
     @Override
     public String toString(){

@@ -58,13 +58,13 @@ public class Terminal {
         ArrayList<String> args = new ArrayList<String>();
 
         args.add(getArgumentWithRules("Введите имя (непустая строка)",
-                                            arg -> !arg.equals("")));
+                                            arg -> !arg.matches("\\s*")));
 
-        args.add(getArgumentWithRules("Введите координаты в формате: x y (x - число с дробной частью, оба больше нуля, y - целое)",
-                                            arg -> arg.matches("\\d+(\\.?\\d*) \\d+\\s*")));
+        args.add(getArgumentWithRules("Введите координаты в формате: x y (x - число с дробной частью типа double, оба больше нуля, y - целое формата long)",
+                                            arg -> ArgumentValidator.checkCoordinates(arg)));
 
-        args.add(getArgumentWithRules("Введите силу двигателя (неотрицательное целое число больше нуля):",
-                                            arg -> arg.matches("[1-9]\\d*\\s*")));
+        args.add(getArgumentWithRules("Введите силу двигателя (неотрицательное целое число больше нуля и мень 2^63):",
+                                            arg -> ArgumentValidator.checkEnginePower(arg)));
 
         List<VehicleType> possibleTypes = Arrays.asList(VehicleType.values());
         ArrayList<String> possibleTypesStr = new ArrayList<>();
@@ -92,23 +92,7 @@ public class Terminal {
      * @param commandToCheck команда, аргумент которой нужно проверить
      * @return true, если id валиден, false в ином случае
      */
-    private boolean checkValideId(String[] commandToCheck){
-        if(commandToCheck.length == 1){
-            System.out.println("id должен быть введен через пробел после команды");
-            return false;
-        }
-        else if(!commandToCheck[1].matches("[1-9]\\d*\\s*")) {
-            System.out.println("id должен быть целым неотрицательным числом");
-            return false;
-        }
-        try {
-            Integer.parseInt(commandToCheck[1]);
-        } catch (Exception e) {
-            System.out.println("Слишком большое значение id, невозможно  выполнить команду");
-            return false;
-        }
-        return true;
-    }
+
     /**
      * Основной метод для работы с пользователем и чтения введенных команд
      */
@@ -121,15 +105,14 @@ public class Terminal {
                 if(command.equals(""))
                     continue;
                 String[] commandToCheck = command.split(" ");
-                if(commandToCheck[0].equals("update") || commandToCheck[0].equals("remove_by_id")){
-                    if(!checkValideId(commandToCheck))
+                if(this.commandExecuter.checkIfNeedId(commandToCheck[0])){
+                    if(!ArgumentValidator.checkId(commandToCheck))
                         continue;
                 }
-                if (commandToCheck[0].equals("add") || commandToCheck[0].equals("update") || commandToCheck[0].equals("add_if_min") || commandToCheck[0].equals("add_if_max"))
+                if (this.commandExecuter.checkIfNeedElement(commandToCheck[0]))
                     element = this.readElement();
-                Request request = new Request(command, element);
+                Request request = new Request(command, element, this);
                 commandExecuter.executeCommand(request);
-                //commandExecuter.executeCommand(command, element);
             }
             catch (VehicleException e) {
                 System.out.println(e.getMessage() + " " + e.getCause().getMessage());
@@ -137,7 +120,7 @@ public class Terminal {
             catch (NoSuchElementException e){
                 sc.close();
                 System.out.println("Программа завершена");
-                Request request = new Request("exit", element);
+                Request request = new Request("exit", element, this);
                 commandExecuter.executeCommand(request);
             }
         }
@@ -148,6 +131,7 @@ public class Terminal {
      * Метод запуска
      */
     public void start(){
+        System.out.println("Здравсвтуйте, для получения справки по командам введите help");
         readFromConsole();
     }
 

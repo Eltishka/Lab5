@@ -13,15 +13,12 @@ import java.util.stream.Collectors;
  * Реализация команды print_field_descending_engine_power
  * @author Piromant
  */
-public class PrintFieldDescendingEnginePower implements Command{
-    /**
-     * @see Storage
-     */
-    private Storage<? extends Vehicle> storage;
+public class PrintFieldDescendingEnginePower extends Command{
 
-    public <T extends Vehicle> PrintFieldDescendingEnginePower(Storage<T> storage){
-        this.storage = storage;
+    public <T extends Vehicle> PrintFieldDescendingEnginePower(Storage<T> storage, String argument, T el) {
+        super(storage, argument, el);
     }
+
 
     /**
      * Метод, выводящий все элементы коллекции в порядке убывания их силы двигателя
@@ -31,7 +28,12 @@ public class PrintFieldDescendingEnginePower implements Command{
         if(this.storage.size() == 0){
             return new Response("Коллекция пуста");
         }
-        LinkedHashSet<? extends Vehicle> res = this.storage.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toCollection(LinkedHashSet::new));
+        LinkedHashSet<? extends Vehicle> res = ((Storage<? super Vehicle>)(this.storage)).stream().sorted(Comparator.reverseOrder()).collect(Collectors.toCollection(LinkedHashSet::new));
         return new Response(res.toArray());
+    }
+
+    @Override
+    public String getHelp() {
+        return "Выводит значения поля enginePower всех элементов в порядке убывания";
     }
 }

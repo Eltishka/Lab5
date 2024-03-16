@@ -1,19 +1,23 @@
 package server.Commands;
 
+import objectspace.Vehicle;
 import server.Response;
+import server.database.Storage;
 import server.utilities.InfoSender;
 /**
  * 
  * Реализация "неизветсной" команды, то есть той, которой нет в списке команд
  * @author Piromant
  */
-public class UnknownCommand implements Command {
+public class UnknownCommand extends Command {
 
     /**
      * Имя несуществующей команды
      */
     private String command;
-    public UnknownCommand(String command){
+
+    public <T extends Vehicle> UnknownCommand(Storage<T> storage, String argument, T el, String command) {
+        super(storage, argument, el);
         this.command = command;
     }
 
@@ -23,5 +27,10 @@ public class UnknownCommand implements Command {
     @Override
     public Response execute() {
         return new Response("команды \"" + this.command + "\" нет, чтобы вывести список комманд используйте help");
+    }
+
+    @Override
+    public String getHelp() {
+        return null;
     }
 }

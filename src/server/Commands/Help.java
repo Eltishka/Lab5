@@ -1,42 +1,60 @@
 package server.Commands;
 
+import objectspace.Vehicle;
 import server.Response;
+import server.database.Storage;
 import server.utilities.InfoSender;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
+
 /**
  * 
  * Реализация команды help
  * @author Piromant
  */
-public class Help implements Command{
+public class Help extends Command{
 
-    public Help(){
 
+    private Map<String, Class<? extends Command>> commandMap;
+    public <T extends Vehicle> Help(Storage<T> storage, String argument, T el, Map<String, Class<? extends Command>> commandMap) {
+        super(storage, argument, el);
+        this.commandMap = commandMap;
     }
 
+    private <T extends Vehicle> Help(Storage<T> storage, String argument, T el){
+        super(storage, argument, el);
+    }
     /**
      * Метод, выводящий справку по всем командам
      */
     @Override
     public Response execute() {
         ArrayList<String> res = new ArrayList<>();
-        res.add("help : вывести справку по доступным командам");
-        res.add("info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов)");
-        res.add("show : вывести в стандартный поток вывода все элементы коллекции в строковом представлении");
-        res.add("add {element, ввод элемента осущестлявется в следующих 5 строках} : добавить новый элемент в коллекцию");
-        res.add("update id {element, ввод элемента осущестлявется в следующих 5 строках} : обновить значение элемента коллекции, id которого равен заданному");
-        res.add("remove_by_id id : удалить элемент из коллекции по его id");
-        res.add("clear : очистить коллекцию");
-        res.add("save : сохранить коллекцию в файл, имя которого передается путем чтения значения переменной окружения SAVEFILE, оттуда же загружается коллекция при старте программы");
-        res.add("execute_script file_name : считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.");
-        res.add("exit : завершить программу (без сохранения в файл)");
-        res.add("add_if_max {element, ввод элемента осущестлявется в следующих 5 строках} : добавить новый элемент в коллекцию, если его значение превышает значение наибольшего элемента этой коллекции");
-        res.add("add_if_min {element, ввод элемента осущестлявется в следующих 5 строках} : добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции");
-        res.add("history : вывести последние 7 команд (без их аргументов)");
-        res.add("average_of_engine_power : вывести среднее значение поля enginePower для всех элементов коллекции");
-        res.add("filter_contains_name name : вывести элементы, значение поля name которых содержит заданную подстроку");
-        res.add("print_field_descending_engine_power : вывести значения поля enginePower всех элементов в порядке убывания");
+        for(String name: this.commandMap.keySet()){
+            String description = name;
+            Class command = this.commandMap.get(name);
+            if(CommandUsingElement.class.isAssignableFrom(command))
+                description += " {element, ввод элемента осущестлявется в следующих 5 строках} ";
+            try {
+                Constructor constructor = command.getDeclaredConstructor(Storage.class, String.class, Vehicle.class);
+                constructor.setAccessible(true);
+                description += " : " + command.getMethod("getHelp").invoke(constructor.newInstance(storage, argument, el));
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                e.printStackTrace();
+            }
+            res.add(description);
+        }
         return new Response(res.toArray());
+    }
+
+    @Override
+    public String getHelp() {
+        return "Выводит справку по доступным командам";
     }
 }
