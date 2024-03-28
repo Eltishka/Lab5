@@ -1,4 +1,4 @@
-package commands;
+package сommands;
 
 import dataexchange.Request;
 import dataexchange.Response;
@@ -48,6 +48,7 @@ public class ExecuteScript extends Command{
             commandList = fileReader.readCommandsFromFile(argument);
         } catch (FileNotFoundException | NullPointerException e) {
             return new Response("Файл не найден");
+
         } catch (SecurityException e){
             return new Response("Не хватает прав для доступа к файлу");
         } catch (IOException e){
@@ -59,7 +60,7 @@ public class ExecuteScript extends Command{
         try {
             while (it.hasNext()) {
                 Pair<String, ArrayList<String>> command = it.next();
-                Request request = new Request(command.getFirst(), command.getSecond(), this);
+                Request request = new Request(command.getFirst(), command.getSecond(), false);
                 if(command.getFirst().equals("execute_script " + argument))
                     response.add("Скрипт вызывает сам себя. Комманда вызова скрипта в скрипте была пропущена");
                 else

@@ -1,4 +1,4 @@
-package commands;
+package сommands;
 
 import dataexchange.Response;
 import objectspace.Vehicle;
@@ -6,6 +6,7 @@ import server.database.Storage;
 import server.filework.FileSaver;
 import server.filework.XMLSaver;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,9 +43,11 @@ public class Save extends Command{
             this.fileSaver.save(this.argument, this.storage);
             response.add("Файл сохранен");
         } catch (FileNotFoundException e) {
-            response.add("Файл не найден");
-        } catch (SecurityException e){
-            response.add("Не хватает прав для доступа к файлу");
+            File file = new File(this.argument);
+            if(!file.exists())
+                response.add("Файл не найден");
+            else if(!file.canWrite())
+                response.add("Не хватает прав для записи файла");
         } catch (NullPointerException e){
             response.add("Не удалось получить инофрмацию об имени файл, возможно переменная окружения SAVEFILE не опрделена");
         }

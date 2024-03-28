@@ -1,4 +1,4 @@
-package commands;
+package сommands;
 
 import dataexchange.Response;
 import objectspace.Vehicle;
@@ -19,8 +19,8 @@ public class Exit extends Command{
      */
     @Override
     public Response execute() {
-        System.exit(0);
-        return new Response();
+        (new Save(storage, argument, el)).execute();
+        return new Response("До свидания!");
     }
 
     @Override

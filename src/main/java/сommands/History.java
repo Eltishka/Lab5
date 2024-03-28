@@ -1,4 +1,4 @@
-package commands;
+package сommands;
 
 import dataexchange.Response;
 import objectspace.Vehicle;
@@ -17,7 +17,7 @@ public class History extends Command{
     /**
      * История команд в виде пар (Имя, Объект класса команды)
      */
-    Deque<Pair<String, Command>> history = new LinkedList<>();
+    private Deque<Pair<String, Command>> history;
 
     public <T extends Vehicle> History(Storage<T> storage, String argument, T el, Deque<Pair<String, Command>> history) {
         super(storage, argument, el);

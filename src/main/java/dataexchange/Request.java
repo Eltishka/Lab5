@@ -2,18 +2,19 @@ package dataexchange;
 
 import objectspace.Vehicle;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Реквест хранит четыре поля: имя команды, ее аргумент, элемент и отправителя
  */
-public class Request {
+public class Request implements Serializable {
     public final String command_name;
     public final String argument;
     public final Vehicle element;
-    public final Object sender;
+    public final boolean sentFromClient;
 
-    public Request(String command, ArrayList<String> element, Object sender) {
+    public Request(String command, ArrayList<String> element, boolean sentFromClient) {
         String[] commandParts = command.split(" ");
         this.command_name = commandParts[0];
 
@@ -28,6 +29,6 @@ public class Request {
         else
             this.argument = "";
 
-        this.sender = sender;
+        this.sentFromClient = sentFromClient;
     }
 }

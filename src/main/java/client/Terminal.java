@@ -4,7 +4,9 @@ import dataexchange.Request;
 import objectspace.FuelType;
 import objectspace.VehicleType;
 import objectspace.exceptions.VehicleException;
-import server.CommandExecuter;
+import сommands.CommandHashMap;
+import сommands.CommandUsingElement;
+import сommands.CommandWithId;
 
 import java.util.*;
 /**
@@ -12,23 +14,31 @@ import java.util.*;
  * Класс для работы с пользователем, принимания команд в текстовом виде и передачи их в исполнитель команд
  * @author Piromant
  */
-public class Terminal {
-    /**
-     * Исполнитель команд
-     * @see CommandExecuter
-     */
-    private CommandExecuter commandExecuter;
+public class Terminal implements Runnable{
     /**
      * Сканер для считывания введенных данных
      */
     private Scanner sc;
 
+    private Client client;
+
+    private CommandHashMap commandMap;
     /**
      * Конструктор, получающий доступ к исполнителю команд
      */
-    public Terminal(){
-        this.commandExecuter = CommandExecuter.getAccess();
+    public Terminal(String server_address, int server_port){
         this.sc = new Scanner(System.in);
+        this.client = new Client(server_address, server_port);
+
+
+    }
+
+    public boolean checkIfNeedElement(String commandName){
+        return CommandUsingElement.class.isAssignableFrom(this.commandMap.get(commandName));
+    }
+
+    public boolean checkIfNeedId(String commandName){
+        return CommandWithId.class.isAssignableFrom(this.commandMap.get(commandName));
     }
 
     /**
@@ -96,7 +106,7 @@ public class Terminal {
     /**
      * Основной метод для работы с пользователем и чтения введенных команд
      */
-    public void readFromConsole() {
+    public void run() {
         String command = "";
         while(!command.equals("exit")) {
             ArrayList<String> element = new ArrayList<>();
@@ -105,14 +115,14 @@ public class Terminal {
                 if(command.equals(""))
                     continue;
                 String[] commandToCheck = command.split(" ");
-                if(this.commandExecuter.checkIfNeedId(commandToCheck[0])){
+                if(this.checkIfNeedId(commandToCheck[0])){
                     if(!ArgumentValidator.checkId(commandToCheck))
                         continue;
                 }
-                if (this.commandExecuter.checkIfNeedElement(commandToCheck[0]))
+                if (this.checkIfNeedElement(commandToCheck[0]))
                     element = this.readElement();
-                Request request = new Request(command, element, this);
-                commandExecuter.executeCommand(request);
+                Request request = new Request(command, element, true);
+                this.client.sendRequest(request);
             }
             catch (VehicleException e) {
                 System.out.println(e.getMessage() + " " + e.getCause().getMessage());
@@ -120,9 +130,10 @@ public class Terminal {
             catch (NoSuchElementException e){
                 sc.close();
                 System.out.println("Программа завершена");
-                Request request = new Request("exit", element, this);
-                commandExecuter.executeCommand(request);
+                Request request = new Request("exit", element, true);
+                this.client.sendRequest(request);
             }
+            System.out.println(this.client.receiveResponse());
         }
     }
 
@@ -131,8 +142,9 @@ public class Terminal {
      * Метод запуска
      */
     public void start(){
+        this.commandMap = (CommandHashMap) this.client.start().getResponse()[0];
         System.out.println("Здравсвтуйте, для получения справки по командам введите help");
-        readFromConsole();
+        run();
     }
 
 

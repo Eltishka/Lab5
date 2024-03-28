@@ -1,4 +1,4 @@
-package commands;
+package сommands;
 
 import dataexchange.Response;
 import objectspace.Vehicle;
@@ -22,7 +22,7 @@ public class Show extends Command{
     @Override
     public Response execute() {
         if(storage.size() > 0)
-            return new Response(storage.toArray());
+            return new Response(storage.stream().sorted().toArray());
         else
             return new Response("В коллекции нет элементов");
     }

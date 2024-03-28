@@ -1,22 +1,22 @@
 package server;
 
-import commands.Command;
-import commands.Help;
-import commands.History;
-import commands.UnknownCommand;
 import objectspace.Vehicle;
 import server.database.Storage;
+import сommands.*;
 
 import java.util.Deque;
-import java.util.HashMap;
 
 public class Invoker {
     private static Invoker invoker;
 
-    private HashMap<String, Class<? extends Command>> commandMap;
+    private CommandHashMap commandMap;
 
     private Invoker(){
-        this.commandMap = new HashMap<>();
+        this.commandMap = new CommandHashMap();
+    }
+
+    public CommandHashMap getCommandMapClone(){
+        return (CommandHashMap) commandMap.clone();
     }
 
     public static Invoker getAccess(){
@@ -25,11 +25,6 @@ public class Invoker {
         return invoker;
     }
 
-    public Class get(String name){
-        if(!commandMap.keySet().contains(name))
-            return UnknownCommand.class;
-        return commandMap.get(name);
-    }
 
     public void register(String name, Class<? extends Command> command){
         this.commandMap.put(name, command);

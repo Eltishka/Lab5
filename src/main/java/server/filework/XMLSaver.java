@@ -22,7 +22,6 @@ public class XMLSaver implements FileSaver {
      */
     @Override
     public void save(String fileName, Storage<Vehicle> arr) throws IOException, SecurityException {
-
         ObjectMapper xmlMapper = new XmlMapper();
         xmlMapper.writeValue(new File(fileName), arr);
 

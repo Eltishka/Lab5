@@ -1,9 +1,11 @@
 package objectspace;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.*;
 import objectspace.exceptions.*;
 import server.utilities.IDGenerator;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -17,7 +19,8 @@ import java.util.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Vehicle implements Comparable<Vehicle> {
+@JacksonXmlRootElement(localName = "Vehicle")
+public class Vehicle implements Comparable<Vehicle>, Serializable {
     private @NonNull Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private @NonNull String name; //Поле не может быть null, Строка не может быть пустой
     /**
