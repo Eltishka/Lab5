@@ -1,6 +1,5 @@
 package server;
 
-import commands.*;
 import dataexchange.Request;
 import dataexchange.Response;
 import objectspace.Vehicle;
@@ -9,10 +8,14 @@ import server.filework.*;
 import server.utilities.InfoSender;
 import server.utilities.OutStreamInfoSender;
 import server.utilities.Pair;
+import сommands.Command;
+import сommands.ExecuteScript;
+import сommands.Save;
+import сommands.UnknownCommand;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.LinkedList;
 /**
  * Класс - исполнитель комманд
@@ -62,9 +65,17 @@ public class CommandExecuter {
         this.fileSaver = new XMLSaver();
         try {
             this.storage = (new XMLLoader(fileReader, System.getenv("SAVEFILE"))).loadStorage();
-        } catch (IOException | ParseException | NullPointerException e){
-            infoSender.sendLine("Невозможно загрузить коллекцию из файла. Файл должен сущетсвовать, имя файла должно хранится в переменной окружения SAVEFILE. Возможно ошибка в xml-тэгах");
+        } catch (IOException | ParseException e){
+            File file = new File(System.getenv("SAVEFILE"));
+            if(!file.exists())
+                this.infoSender.sendLine("Невозможно загрузить коллекцию из файла. Файл не существует");
+            else if(!file.canRead())
+                this.infoSender.sendLine("Невозможно загрузить коллекцию из файла. Не хватает прав на чтение файла");
+            else
+                this.infoSender.sendLine("Невозможно загрузить коллекцию из файла. Ошибка в xml-тэгах");
             this.storage = new Storage<>();
+        } catch(NullPointerException e){
+            this.infoSender.sendLine("Невозможно загрузить коллекцию из файла. Переменная SAVEFILE не определена");
         } catch (Exception e){
             this.infoSender.sendLine("Невозможно заргузить коллекцию. Ошибка в файле");
             this.storage = new Storage<>();
@@ -78,31 +89,31 @@ public class CommandExecuter {
      * Также здесь происходит парсинг объекта типа Vehicle из строк
      * @param request запрос
      */
-    public void executeCommand(Request request/*String command, ArrayList<String> element*/) {
+    public Response executeCommand(Request request/*String command, ArrayList<String> element*/) {
 
         String command_name = request.command_name;
         String argument = request.argument;
         Vehicle v = request.element;
-
+        Response response = new Response();
 
         Command commandToExecute = this.invoker.getCommandToExecute(command_name, this.storage, argument, v, this.history);
-        if(request.sender instanceof ExecuteScript) {
+        if(!request.sentFromClient) {
             if (commandToExecute instanceof ExecuteScript) {
                 if (executedRecursionScript.contains(argument)) {
-                    this.infoSender.sendLine("Рекурсия в скрипте! Инструкция пропущена. Скрипт продолжается...");
-                    return;
+                    response = new Response("Рекурсия в скрипте! Инструкция пропущена. Скрипт продолжается...");
+                    return response;
                 }
                 this.executedRecursionScript.add(argument);
             }
         } else{
             this.executedRecursionScript.clear();
         }
-        Response response = commandToExecute.execute();
-        this.infoSender.sendMultiLines(Arrays.asList(response.getResponse()));
+        response = commandToExecute.execute();
 
         if(!(commandToExecute instanceof UnknownCommand))
             this.writeCommandToHistory(new Pair<>(command_name, commandToExecute));
 
+        return response;
     }
 
     /**
@@ -115,11 +126,8 @@ public class CommandExecuter {
         this.history.add(command);
     }
 
-    public boolean checkIfNeedElement(String commandName){
-        return CommandUsingElement.class.isAssignableFrom(this.invoker.get(commandName));
+    public void externalSave(){
+        (new Save(this.storage, "", null)).execute();
     }
 
-    public boolean checkIfNeedId(String commandName){
-        return CommandWithId.class.isAssignableFrom(this.invoker.get(commandName));
-    }
 }

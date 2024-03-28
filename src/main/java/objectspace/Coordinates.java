@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * Класс координат в формате (x, y)
  */
@@ -12,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Coordinates {
+public class Coordinates implements Serializable {
     private Double x; //Поле не может быть null
     private Long y; //Поле не может быть null
 
